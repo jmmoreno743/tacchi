@@ -1,0 +1,177 @@
+
+<!-- 
+Ejercicio videojuego tacones 
+Juan Manuel Moreno Beltran
+-->
+
+<!-- 
+Encabezado
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+	<head>
+		<title>Ejercicio HTML5</title>
+
+		<script type="text/javascript" src="jquery.js"></script>
+		<script type="text/javascript" src="jquery-ui-1.8.2.custom.min.js"></script>
+
+
+
+		<style type="text/css">
+
+		/*
+		 * Foot.
+		 */
+		#foot {
+		}
+		
+		/*
+		 * Sprite imagen.
+		 */
+		#foot img {
+		  position: absolute;
+		  left: 20px;
+		  top: 80px;
+		}
+		
+		</style>
+		
+		
+		
+		<script type="text/javascript">
+		
+		/*
+		 * Atributos.
+		 */
+		var rotationg = -4; // Factor de rotacion.
+		var moving = -7; // Factor de movimiento.
+		var angleg = rotationg * Math.PI / 180; // Angulo de rotacion.
+		var VAL_TOP_UP = 275; // Limite de movimiento arriba.
+		var VAL_TOP_DOWN = 335; // Limite de movimiento abajo.		
+		var flagtype = 0; // Flag hice algo con el teclado.
+		var keymovin = 70; // Factor de movimiento con el teclado.
+		
+		/*
+		 * Llamamos funcion principal.
+		 */
+		$( go );
+		
+		
+		
+		/**
+		 * go
+		 */
+		function go() {
+			
+		  $('#foot img').each( function(index) {
+		
+			// Definimos posicion inicial
+			var left = 190;
+			var top = 335;
+			
+			// Ubicamos imagen que queremos animar en la posicion inicial.
+			$(this).css( 'left', left+'px' );
+			$(this).css( 'top', top+'px' );
+			
+			// Guardamos datos.
+			$(this).data('enx', left); // Coordenada izquierda.
+			$(this).data('eny', top); // Coordenada arriba.
+			$(this).data('myangle', (angleg * -1)); // Angulo de rotacion en radianes.
+			$(this).data('factor', (angleg * -1)); // Factor de angulo de rotacion.
+			$(this).data('rotation', (rotationg * -1)); // Factor de rotacion.
+			$(this).data('movin', moving); // Factor de movimiento.
+			
+			});
+			
+			setInterval(draw, 1000 / 16); // Loop.
+		}
+
+
+
+		/**
+		 * draw
+		 */
+		function draw() {
+		
+			  $('#foot img').each( function(index) {
+			
+				// Definimos datos
+				var movin = $(this).data('movin'); // Factor de movimiento.
+				var left = $(this).data('enx') + movin; // Coordenada izquierda.
+				var top = $(this).data('eny') + movin; // Coordenada arriba.
+				if (flagtype > 0) { // Verificamos que hicieron algo con el teclado.
+					
+					top += keymovin;
+					flagtype = 0;
+				}
+				var rotation = $(this).data('rotation'); // Factor de rotacion.
+				var factor = $(this).data('factor'); // Factor de angulo de rotacion.
+				var myangle = $(this).data('myangle') + factor; // Angulo de rotacion en radianes.
+				
+				// Evaluamos top, para que suba o baje la parte
+				if ( top < VAL_TOP_UP || top > VAL_TOP_DOWN ) {
+
+					rotation *= -1;
+					movin *= -1;
+					factor = rotation * Math.PI / 180;
+				}
+				
+				top += movin; // Movemos arriba o abajo de acuerdo al factor de movimiento.
+
+				// Rotamos
+				$(this).css('transform','rotate(' + myangle + 'rad)');
+				$(this).css('-moz-transform','rotate(' + myangle + 'rad)');
+				
+				// Movemos la figura.
+				$(this).css( 'left', left+'px' );
+				$(this).css( 'top', top+'px' );
+				
+				// Guardamos datos.
+				$(this).data('enx', left); // Coordenada izquierda.
+				$(this).data('eny', top); // Coordenada arriba.
+				$(this).data('myangle', myangle); // Angulo de rotacion en radianes.
+				$(this).data('factor', factor); // Factor de angulo de rotacion.
+				$(this).data('rotation', rotation); // Factor de rotacion.
+				$(this).data('movin', movin); // Factor de movimiento.
+			});
+		}		
+		
+		
+		
+		// captura onkeydown ejecutando keyDown de global.
+		document.onkeydown = function(event) {
+		
+			if (event.keyCode == 38 || event.keyCode == 40)
+			{
+			
+				if ( 	(event.keyCode == 38 && keymovin > 0) ||
+						(event.keyCode == 40 && keymovin < 0) )
+				{
+				
+					keymovin *= -1; // Invertimos sentido.
+				}
+				
+				//alert("arriba voy");
+				VAL_TOP_UP += keymovin; // Limite de movimiento arriba.
+				VAL_TOP_DOWN += keymovin; // Limite de movimiento abajo.	
+				
+				flagtype = 1;
+			}
+		};
+		</script>
+
+<!-- 
+Fin head 
+-->
+	</head>
+	
+<!-- 
+Comienzo body
+-->	
+	<body>
+		
+		<div id="foot"><img src="minileg03.png" alt="pie" /></div>
+		<div id="score"><img src="score03.png" alt="pie" /></div>
+	</body>
+</html>
