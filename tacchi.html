@@ -51,6 +51,10 @@ Encabezado
 		var VAL_TOP_DOWN = 335; // Limite de movimiento abajo.		
 		var flagtype = 0; // Flag hice algo con el teclado.
 		var keymovin = 70; // Factor de movimiento con el teclado.
+		var crono; // Cronometro.
+		var time = 0; // Tiempo que me demoro en tensar una cuerda.
+		var distance = 0; // Distancia entre el zapato y la cuerda.
+		var joule = 0; // Fuerza para impulsar el zapato.
 		
 		/*
 		 * Llamamos funcion principal.
@@ -159,6 +163,60 @@ Encabezado
 				flagtype = 1;
 			}
 		};
+		
+		
+		
+		
+		// cuenta el tiempo de tensar una cuerda.
+		function tense() {
+		
+			time++;
+		}
+		
+		
+		
+
+ 		// cuenta el tiempo de tensar una cuerda.
+		function getDistance(xPointer) {
+		
+			distance = xPointer - 190;
+		}
+
+
+
+
+
+ 		// calcula la fuerza de acuerdo a tiempo y distancia.
+		function getJoule() {
+		
+			joule = (time * time) / distance;
+			alert("fuerza es: " + time + "(2) / " + distance + " =  " + joule);
+		}
+
+
+
+
+		
+		// captura mousedown.
+		document.onmousedown = function(event) {
+		
+			if (event.clientY >= 434 || event.clientY <= 432) { // Contamos tiempo desde una cuerda.
+			
+				time = 0;
+				crono = setInterval(tense, 1000);			
+			}
+		};	
+
+
+
+
+		// captura onmouseup.
+		document.onmouseup = function(event) {
+		
+			clearInterval(crono); // Paramos contar tiempo.
+			getDistance(event.clientX); // Calculamos distancia entre zapato y punto de tensar.
+			getJoule(); // Calculamos fuerza.
+		};			
 		</script>
 
 <!-- 
